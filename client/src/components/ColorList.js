@@ -1,6 +1,7 @@
 import React, { useState, useParams, useHistory } from "react";
 import axios from "axios";
 import axiosWithAuth from '../utils/axiosWithAuth';
+import AddColor from "./AddColor";
 
 const initialColor = {
   color: "",
@@ -22,34 +23,31 @@ const ColorList = ({ colors, updateColors }) => {
   const saveEdit = e => {
     e.preventDefault();
     // Make a put request to save your updated color
-  axiosWithAuth
-  .put(`/colors/${this.color.id}`, this.color)
-      .then(res => {
-      const newColorList = colors.map(cl => {
-        if (cl.id === res.data.id) {
-            return res.data
-        }
-        return cl
-    })
-    // setColorList(newColorList)
-    //    push(`/`);
+  axiosWithAuth()
+  // .put(`/colors/${color.id}`)
+  //     .then(res => {
+  //     const newColorList = colors.map(cl => {
+  //       if (cl.id === res.data.id) {
+  //           return res.data
+  //       }
+  //       return cl
+  //   })
+  //   updateColors(newColorList)
+  //      useHistory.push(`/`);
+  .put(`/colors/${colorToEdit.id}`, colorToEdit)
+    .then(res =>{
+      setColorToEdit(res.data)
+      setEditing(false);
   })
     // think about where will you get the id from...
 
 
     // where is is saved right now?
-
+    getNewList();
+    useHistory.push(`/`); //hgas an odd error, even though it functions in delete.
 
   }
-
-  // const getNewList = () => {
-  //   axiosWithAuth
-  //     .get("/colors")
-  //     .then(res => 
-  //       setColorList(res.data)
-  //       )
-  //     .catch(err => console.log(err.response));
-  // };
+ 
   const getNewList = () => {
     axiosWithAuth()
       .get("http://localhost:5000/api/colors")
@@ -71,7 +69,7 @@ const ColorList = ({ colors, updateColors }) => {
         
       })
       .catch(err =>
-        console.error("Movie.js: handleDelete: err: ", err.message, err.response)
+        console.error("ColorList.js: handleDelete: err: ", err.message, err.response)
       );
   };
 
@@ -131,6 +129,8 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+      {/* <AddColor /> */}
+      
     </div>
   );
 };
