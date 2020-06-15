@@ -7,14 +7,12 @@ const initialColor = {
   code: { hex: "" }
 };
 
-
-
 const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+  console.log("Info: colors", colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
-  // const params = useParams();
+  
 
   const editColor = color => {
     setEditing(true);
@@ -24,15 +22,25 @@ const ColorList = ({ colors, updateColors }) => {
   const saveEdit = e => {
     e.preventDefault();
     // Make a put request to save your updated color
-
-
+  axiosWithAuth
+  .put(`/colors/${this.color.id}`, this.color)
+      .then(res => {
+      const newColorList = colors.map(cl => {
+        if (cl.id === res.data.id) {
+            return res.data
+        }
+        return cl
+    })
+    // setColorList(newColorList)
+    //    push(`/`);
+  })
     // think about where will you get the id from...
 
 
     // where is is saved right now?
 
 
-  };
+  }
 
   // const getNewList = () => {
   //   axiosWithAuth
@@ -42,18 +50,28 @@ const ColorList = ({ colors, updateColors }) => {
   //       )
   //     .catch(err => console.log(err.response));
   // };
-
+  const getNewList = () => {
+    axiosWithAuth()
+      .get("http://localhost:5000/api/colors")
+      .then(res => 
+        updateColors(res.data)
+        )
+      .catch(err => console.log(err.response));
+  };
 
   const deleteColor = color => {
     // make a delete request to delete this color
 
-axiosWithAuth
-      .delete(`/colors/${colors.id}`)
+    axiosWithAuth()
+      .delete(`/colors/${color.id}`)
       .then(res => {
         console.log("delete", res.data);
+        getNewList();
+        useHistory.push(`/`);
+        
       })
       .catch(err =>
-        console.error("ColorList.js: handleDelete: err: ", err.message, err.response)
+        console.error("Movie.js: handleDelete: err: ", err.message, err.response)
       );
   };
 
